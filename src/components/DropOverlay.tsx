@@ -1,9 +1,17 @@
 import React from 'react';
 
+type Props = {
+  /**
+   * ファイルがドロップされたときのハンドラー。
+   * @param files Fileオブジェクトの配列
+   */
+  fileHandler: (files: File[]) => void;
+};
+
 /**
  * ファイルをドロップするためのオーバーレイ。
  */
-export function DropOverlay() {
+export function DropOverlay(props: Props) {
   const [isHover, setIsHover] = React.useState(false);
 
   // ファイルのドラッグを扱うコールバック
@@ -17,6 +25,21 @@ export function DropOverlay() {
     e.stopPropagation();
     e.preventDefault();
   }, []);
+
+  // ファイルがドロップされた際の処理
+  const dropHandler = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsHover(false);
+    if (!e.dataTransfer.files) {
+      return;
+    }
+    const array = [];
+    for (const f of e.dataTransfer.files) {
+      array.push(f);
+    }
+    props.fileHandler(array);
+    // e.dataTransfer.clearData();
+  };
 
   // ファイルが画面内へドラッグされたときの処理を登録
   React.useEffect(() => {
@@ -39,6 +62,7 @@ export function DropOverlay() {
       }}
       onDragLeave={leaveHandler}
       onDragOver={(e) => e.preventDefault()}
+      onDrop={dropHandler}
     ></div>
   );
 }

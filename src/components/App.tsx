@@ -3,10 +3,14 @@ import { DropOverlay } from './DropOverlay';
 import { MapView } from './MapView';
 
 function App() {
+  const fileDropHandler = (files: File[]) => {
+    console.log(files);
+  };
+
   return (
     <>
       <MapView />
-      <DropOverlay />
+      <DropOverlay fileHandler={fileDropHandler} />
     </>
   );
 }
