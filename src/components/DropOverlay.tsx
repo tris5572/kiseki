@@ -33,11 +33,12 @@ export function DropOverlay(props: Props) {
     if (!e.dataTransfer.files) {
       return;
     }
-    const array = [];
+    const files = [];
     for (const f of e.dataTransfer.files) {
-      array.push(f);
+      files.push(f);
     }
-    props.fileHandler(array);
+
+    props.fileHandler(files);
     // e.dataTransfer.clearData();
   };
 
