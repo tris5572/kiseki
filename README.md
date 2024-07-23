@@ -1,30 +1,16 @@
-# React + TypeScript + Vite
+# Kiseki (軌跡)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Kiseki は GPX ファイルの軌跡を地図上に表示する Web アプリです。
 
-Currently, two official plugins are available:
+絶賛開発中です。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 予定している機能
 
-## Expanding the ESLint configuration
+- GPX ファイルをウィンドウにドロップすることで地図上に軌跡を表示する。
+  - ファイルをまとめて登録・ドロップした際、ファイル名でソートする。
+- それぞれの軌跡の色を変更可能とする。
+- 地図のスタイルを変更可能とする。
+  - 特に白ベースおよび黒ベースのスタイルを設定可能とする。
+- 次に登録する GPX ファイルへ適用する色を設定可能とする。
+- 登録順に自動で色（色相）を設定可能とする。
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
