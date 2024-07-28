@@ -6,10 +6,11 @@ import {
   ScaleControl,
   useControl,
 } from 'react-map-gl/maplibre';
-// import DeckGL from '@deck.gl/react';
 import { PathLayer } from 'deck.gl';
 import { MapboxOverlay as DeckOverlay, MapboxOverlayProps } from '@deck.gl/mapbox';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { RouteData } from '../data/types';
+import { useAppState } from '../data/stores';
 
 function DeckGLOverlay(props: MapboxOverlayProps) {
   const overlay = useControl(() => new DeckOverlay(props));
@@ -17,8 +18,12 @@ function DeckGLOverlay(props: MapboxOverlayProps) {
   return null;
 }
 
+/**
+ * 地図を表示するビュー
+ */
 export function MapView() {
-  const layers = React.useMemo(() => [createPathLayer()], []);
+  const dataList = useAppState((state) => state.dataList);
+  const layers = React.useMemo(() => [createPathLayer(dataList)], [dataList]);
 
   return (
     <Map
@@ -38,50 +43,13 @@ export function MapView() {
   );
 }
 
-function createPathLayer() {
-  return new PathLayer<SampleData>({
+function createPathLayer(data: RouteData[]) {
+  return new PathLayer<RouteData>({
     id: `PathLayer`,
-    data: SAMPLE_DATA,
-    getPath: (d) => d.coordinates,
-    getWidth: () => 10,
+    data: data,
+    getPath: (d) => d.coordinates.map((v) => [v.longitude, v.latitude] as [number, number]),
+    getWidth: () => 2,
     getColor: () => [255, 100, 100],
     widthUnits: 'pixels',
   });
 }
-
-function randomLng(): number {
-  return 136 + 4 * Math.random();
-}
-
-function randomLat(): number {
-  return 33 + 4 * Math.random();
-}
-
-type SampleData = {
-  coordinates: [number, number][];
-};
-
-const SAMPLE_DATA: SampleData[] = [
-  {
-    coordinates: [
-      [138, 39],
-      [139, 39],
-      [140, 40],
-    ],
-  },
-  {
-    coordinates: [
-      [140, 41],
-      [140, 42],
-      [142, 41],
-    ],
-  },
-  {
-    coordinates: [
-      [randomLng(), randomLat()],
-      [randomLng(), randomLat()],
-      [randomLng(), randomLat()],
-      [randomLng(), randomLat()],
-    ],
-  },
-];

@@ -1,18 +1,27 @@
+import { parseGpx } from '../data/gpx';
+import { useAppState } from '../data/stores';
 import './App.css';
 import { DropOverlay } from './DropOverlay';
 import { MapView } from './MapView';
 
 function App() {
+  const addData = useAppState((state) => state.addData);
+
   const fileDropHandler = (files: File[]) => {
     for (const f of files) {
-      console.log(f.type);
       const reader = new FileReader();
       reader.onload = () => {
-        console.log(reader.result);
+        const str = reader.result?.toString();
+        if (!str) {
+          return;
+        }
+        const data = parseGpx(str);
+        if (data) {
+          addData(data);
+        }
       };
       reader.readAsText(f);
     }
-    // console.log(files);
   };
 
   return (

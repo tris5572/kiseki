@@ -1,7 +1,21 @@
 /**
- * 1つの GPX データの型
+ * アプリケーション全体の状態を表す型
  */
-export type GpxData = {
+export type AppState = {
+  /**
+   * ルートデータの配列
+   */
+  dataList: RouteData[];
+  /**
+   * ルートデータを追加する
+   */
+  addData: (data: RouteData) => void;
+};
+
+/**
+ * 1つのルートのデータの型
+ */
+export type RouteData = {
   /**
    * データの名前
    */
