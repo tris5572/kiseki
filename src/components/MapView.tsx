@@ -22,18 +22,25 @@ function DeckGLOverlay(props: MapboxOverlayProps) {
  * 地図を表示するビュー
  */
 export function MapView() {
+  const [initialViewState] = React.useState({
+    longitude: 139.7,
+    latitude: 35.7,
+    zoom: 13,
+  });
+
   const dataList = useAppState((state) => state.dataList);
-  const layers = React.useMemo(() => [createPathLayer(dataList)], [dataList]);
+  const pathLayer = React.useMemo(() => createPathLayer(dataList), [dataList]);
+  const layers = React.useMemo(() => [pathLayer], [pathLayer]);
+
+  // TODO: パスがセットされたら表示領域をパスにフィットさせる
+  // https://deck.gl/docs/api-reference/core/web-mercator-viewport#fitbounds
+  // https://maplibre.org/maplibre-gl-js/docs/examples/zoomto-linestring/
 
   return (
     <Map
       style={{ width: '100dvw', height: '100dvh' }}
-      initialViewState={{
-        longitude: 139,
-        latitude: 36,
-        zoom: 5,
-      }}
-      mapStyle="https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json"
+      initialViewState={initialViewState}
+      mapStyle="/osm-bright-ja-white.json"
     >
       <NavigationControl position="top-right" />
       <GeolocateControl />
