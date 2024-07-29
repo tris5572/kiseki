@@ -1,6 +1,5 @@
 import { parseGpx } from '../data/gpx';
 import { useAppState } from '../data/stores';
-import './App.css';
 import { DropOverlay } from './DropOverlay';
 import { MapView } from './MapView';
 
