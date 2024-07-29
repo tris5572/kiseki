@@ -2,6 +2,7 @@ import React from 'react';
 import {
   GeolocateControl,
   Map,
+  MapStyle,
   NavigationControl,
   ScaleControl,
   useControl,
@@ -11,6 +12,7 @@ import { MapboxOverlay as DeckOverlay, MapboxOverlayProps } from '@deck.gl/mapbo
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { RouteData } from '../data/types';
 import { useAppState } from '../data/stores';
+import styleWhite from '../mapStyles/osm-bright-ja-white.json';
 
 function DeckGLOverlay(props: MapboxOverlayProps) {
   const overlay = useControl(() => new DeckOverlay(props));
@@ -40,7 +42,7 @@ export function MapView() {
     <Map
       style={{ width: '100dvw', height: '100dvh' }}
       initialViewState={initialViewState}
-      mapStyle="/osm-bright-ja-white.json"
+      mapStyle={styleWhite as MapStyle}
     >
       <NavigationControl position="top-right" />
       <GeolocateControl />
