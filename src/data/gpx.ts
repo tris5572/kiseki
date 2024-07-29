@@ -18,14 +18,17 @@ export function parseGpx(input: string): RouteData | undefined {
     name: '',
     coordinates: [],
     color: '',
+    totalDistance: 0,
+    gainedAltitude: null,
   };
 
   // TODO: 名前の取得・設定
 
   const track = gpx.tracks[0];
-  // console.log(gpx);
 
   data.coordinates = track.points.map((p) => ({ longitude: p.longitude, latitude: p.latitude }));
+  data.totalDistance = track.distance.total;
+  data.gainedAltitude = track.elevation.positive;
 
   return data;
 }

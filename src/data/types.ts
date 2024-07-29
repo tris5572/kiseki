@@ -30,6 +30,14 @@ export type RouteData = {
    * TODO: もっと良い型があれば変更する
    */
   color: string;
+  /**
+   * 総距離
+   */
+  totalDistance: number;
+  /**
+   * 累計獲得標高
+   */
+  gainedAltitude: number | null;
 };
 
 /**
