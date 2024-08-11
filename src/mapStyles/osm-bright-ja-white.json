@@ -2190,7 +2190,7 @@
       "layout": {
         "icon-image": "road_{ref_length}",
         "icon-rotation-alignment": "viewport",
-        "icon-size": 1,
+        "icon-size": 0,
         "symbol-placement": {
           "base": 1,
           "stops": [
@@ -2202,9 +2202,10 @@
         "text-field": "{ref}",
         "text-font": ["migu2m-regular"],
         "text-rotation-alignment": "viewport",
+        "text-offset": [0, 0.2],
         "text-size": 10
       },
-      "paint": {}
+      "paint": { "text-color": "hsl(0, 0%, 50%)" }
     },
     {
       "id": "highway-shield-us-interstate",
