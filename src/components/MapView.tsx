@@ -25,9 +25,9 @@ function DeckGLOverlay(props: MapboxOverlayProps) {
  */
 export function MapView() {
   const [initialViewState] = React.useState({
-    longitude: 139.7,
-    latitude: 35.7,
-    zoom: 13,
+    longitude: 137.48,
+    latitude: 36,
+    zoom: 7,
   });
 
   const dataList = useAppState((state) => state.dataList);
