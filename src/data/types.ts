@@ -33,7 +33,7 @@ export type RouteData = {
   /**
    * 総距離
    */
-  totalDistance: number;
+  distance: number;
   /**
    * 累計獲得標高
    */

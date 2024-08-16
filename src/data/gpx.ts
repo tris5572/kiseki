@@ -18,7 +18,7 @@ export function parseGpx(input: string): RouteData | undefined {
     name: '',
     coordinates: [],
     color: '',
-    totalDistance: 0,
+    distance: 0,
     gainedAltitude: null,
   };
 
@@ -27,7 +27,7 @@ export function parseGpx(input: string): RouteData | undefined {
   const track = gpx.tracks[0];
 
   data.coordinates = track.points.map((p) => ({ longitude: p.longitude, latitude: p.latitude }));
-  data.totalDistance = track.distance.total;
+  data.distance = track.distance.total;
   data.gainedAltitude = track.elevation.positive;
 
   return data;
