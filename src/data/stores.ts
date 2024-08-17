@@ -7,4 +7,8 @@ export const useAppState = create<AppState>((set) => ({
   addData(data) {
     set((state) => ({ dataList: [...state.dataList, data] }));
   },
+
+  updateData(data) {
+    set(() => ({ dataList: [...data] }));
+  },
 }));

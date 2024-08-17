@@ -10,6 +10,10 @@ export type AppState = {
    * ルートデータを追加する
    */
   addData: (data: RouteData) => void;
+  /**
+   * データを更新する
+   */
+  updateData: (data: RouteData[]) => void;
 };
 
 /**
@@ -27,9 +31,9 @@ export type RouteData = {
   /**
    * 線の色
    *
-   * TODO: もっと良い型があれば変更する
+   * DeckGL の色設定に合わせるために `[r, g, b]` にしている。
    */
-  color: string;
+  color: [number, number, number];
   /**
    * 総距離
    */

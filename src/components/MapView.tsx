@@ -58,7 +58,7 @@ function createPathLayer(data: RouteData[]) {
     data: data,
     getPath: (d) => d.coordinates.map((v) => [v.longitude, v.latitude] as [number, number]),
     getWidth: () => 2,
-    getColor: () => [255, 100, 100],
+    getColor: (d) => d.color,
     widthUnits: 'pixels',
   });
 }
