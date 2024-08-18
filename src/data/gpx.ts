@@ -17,7 +17,7 @@ export function parseGpx(input: string): RouteData | undefined {
   const data: RouteData = {
     name: '',
     coordinates: [],
-    color: '',
+    color: [200, 100, 100],
     distance: 0,
     gainedAltitude: null,
   };

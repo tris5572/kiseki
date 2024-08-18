@@ -1,5 +1,6 @@
 import { parseGpx } from '../data/gpx';
 import { useAppState } from '../data/stores';
+import { ControlBox } from './controls/ControlBox';
 import { DropOverlay } from './DropOverlay';
 import { MapView } from './MapView';
 
@@ -26,6 +27,7 @@ function App() {
   return (
     <>
       <MapView />
+      <ControlBox />
       <DropOverlay fileHandler={fileDropHandler} />
     </>
   );
