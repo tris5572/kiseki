@@ -21,3 +21,34 @@ export function numbersFromHex(hex: string): [number, number, number] {
   const b = parseInt(hex.slice(5, 7), 16);
   return [r, g, b];
 }
+
+/**
+ * 地図のズームレベルから、間引くためのしきい値[m] を計算する。
+ */
+export function thresholdFromZoom(zoom: number): number {
+  if (zoom < 1) {
+    return 10000;
+  } else if (zoom < 3) {
+    return 5000;
+  } else if (zoom < 4) {
+    return 1000;
+  } else if (zoom < 5) {
+    return 500;
+  } else if (zoom < 6) {
+    return 200;
+  } else if (zoom < 7) {
+    return 150;
+  } else if (zoom < 8) {
+    return 100;
+  } else if (zoom < 9) {
+    return 80;
+  } else if (zoom < 10) {
+    return 60;
+  } else if (zoom < 12) {
+    return 40;
+  } else if (zoom < 14) {
+    return 20;
+  }
+
+  return 10;
+}
