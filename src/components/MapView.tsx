@@ -13,6 +13,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { Point, RouteData } from '../data/types';
 import { useAppState } from '../data/stores';
 import styleWhite from '../mapStyles/osm-bright-ja-white.json';
+import { thresholdFromZoom } from '../data/utils';
 
 function DeckGLOverlay(props: MapboxOverlayProps) {
   const overlay = useControl(() => new DeckOverlay(props));
@@ -94,7 +95,7 @@ function createPathLayer(sourceData: RouteData[], zoom: number) {
  * ズームレベルを参照し、適度に間引いた座標を返す
  */
 function reduceCoordinates(points: Point[], zoom: number): [number, number][] {
-  const threshold = 50 / zoom; // ズームレベルから計算した間隔のしきい値[m]
+  const threshold = thresholdFromZoom(zoom); // ズームレベルから計算した間隔のしきい値[m]
   let dist = 0; // 前回からの累積の間隔[m]
 
   const array: [number, number][] = [];
@@ -119,6 +120,8 @@ function reduceCoordinates(points: Point[], zoom: number): [number, number][] {
   ) {
     array.push([points[points.length - 1].longitude, points[points.length - 1].latitude]);
   }
+
+  // console.log(zoom, threshold, array.length);
 
   return array;
 }
