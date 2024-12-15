@@ -64,6 +64,6 @@ export function DropOverlay(props: Props) {
       onDragLeave={leaveHandler}
       onDragOver={(e) => e.preventDefault()}
       onDrop={dropHandler}
-    ></div>
+    />
   );
 }

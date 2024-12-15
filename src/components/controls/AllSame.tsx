@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAppState } from '../../data/stores';
-import { RouteData } from '../../data/types';
+import type { RouteData } from '../../data/types';
 import { hexFromNumbers, numbersFromHex } from '../../data/utils';
 
 const StyledWrapper = styled.div`

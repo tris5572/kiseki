@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { AppState } from './types';
+import type { AppState } from './types';
 
 export const useAppState = create<AppState>((set) => ({
   dataList: [],
