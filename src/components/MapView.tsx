@@ -1,19 +1,22 @@
-import React from 'react';
+import React from "react";
 import {
   GeolocateControl,
   Map,
-  MapStyle,
+  type MapStyle,
   NavigationControl,
   ScaleControl,
   useControl,
-} from 'react-map-gl/maplibre';
-import { PathLayer } from 'deck.gl';
-import { MapboxOverlay as DeckOverlay, MapboxOverlayProps } from '@deck.gl/mapbox';
-import 'maplibre-gl/dist/maplibre-gl.css';
-import { Point, RouteData } from '../data/types';
-import { useAppState } from '../data/stores';
-import styleWhite from '../mapStyles/osm-bright-ja-white.json';
-import { thresholdFromZoom } from '../data/utils';
+} from "react-map-gl/maplibre";
+import { PathLayer } from "deck.gl";
+import {
+  MapboxOverlay as DeckOverlay,
+  type MapboxOverlayProps,
+} from "@deck.gl/mapbox";
+import "maplibre-gl/dist/maplibre-gl.css";
+import type { Point, RouteData } from "../data/types";
+import { useAppState } from "../data/stores";
+import styleWhite from "../mapStyles/osm-bright-ja-white.json";
+import { thresholdFromZoom } from "../data/utils";
 
 function DeckGLOverlay(props: MapboxOverlayProps) {
   const overlay = useControl(() => new DeckOverlay(props));
@@ -38,7 +41,7 @@ export function MapView() {
 
   return (
     <Map
-      style={{ width: '100dvw', height: '100dvh' }}
+      style={{ width: "100dvw", height: "100dvh" }}
       initialViewState={initialViewState}
       mapStyle={styleWhite as MapStyle}
       onZoomEnd={(e) => setZoom(e.viewState.zoom)}
@@ -81,12 +84,12 @@ function createPathLayer(sourceData: RouteData[], zoom: number) {
   );
 
   return new PathLayer<LocalData>({
-    id: `PathLayer`,
+    id: "PathLayer",
     data,
     getPath: (d) => d.coordinates,
     getWidth: () => 2,
     getColor: (d) => d.color,
-    widthUnits: 'pixels',
+    widthUnits: "pixels",
     jointRounded: true,
   });
 }
@@ -106,7 +109,12 @@ function reduceCoordinates(points: Point[], zoom: number): [number, number][] {
   for (let i = 0; i < points.length - 1; i++) {
     const prev = points[0];
     const now = points[1];
-    dist += distance(prev.longitude, prev.latitude, now.longitude, now.latitude);
+    dist += distance(
+      prev.longitude,
+      prev.latitude,
+      now.longitude,
+      now.latitude
+    );
     if (threshold <= dist) {
       array.push([points[i + 1].longitude, points[i + 1].latitude]);
       dist = 0;
@@ -118,7 +126,10 @@ function reduceCoordinates(points: Point[], zoom: number): [number, number][] {
     points[points.length - 1].longitude !== array[array.length - 1][0] &&
     points[points.length - 1].latitude !== array[array.length - 1][1]
   ) {
-    array.push([points[points.length - 1].longitude, points[points.length - 1].latitude]);
+    array.push([
+      points[points.length - 1].longitude,
+      points[points.length - 1].latitude,
+    ]);
   }
 
   // console.log(zoom, threshold, array.length);
@@ -143,7 +154,8 @@ function distance(
   return (
     6371000 *
     Math.acos(
-      Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2)
+      Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) +
+        Math.sin(lat1) * Math.sin(lat2)
     )
   );
 }

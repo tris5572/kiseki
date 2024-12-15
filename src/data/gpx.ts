@@ -1,5 +1,5 @@
 import { parseGPX } from '@we-gold/gpxjs';
-import { RouteData } from './types';
+import type { RouteData } from './types';
 
 /**
  * GPX ファイルをパースしてデータにする。パースできなかったときは `undefined` を返す。
