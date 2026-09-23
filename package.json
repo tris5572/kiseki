@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mapbox/togeojson": "0.16.2",
     "maplibre-gl": "6.10.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -20,6 +21,7 @@
     "@babel/core": "^7.29.7",
     "@rolldown/plugin-babel": "^0.2.3",
     "@types/babel__core": "^7.20.5",
+    "@types/geojson": "7946.0.16",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",

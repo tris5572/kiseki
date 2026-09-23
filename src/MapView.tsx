@@ -1,7 +1,36 @@
-import Map, { NavigationControl, GeolocateControl, ScaleControl } from "react-map-gl/maplibre";
+import {
+  GeolocateControl,
+  Layer,
+  NavigationControl,
+  ScaleControl,
+  Source,
+} from "react-map-gl/maplibre";
+import Map from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import type { RouteGeoJson } from "./types";
 
-export function MapView() {
+type Props = {
+  /**
+   * 描画対象のルートGeoJSON
+   */
+  routeGeoJson: RouteGeoJson | null;
+};
+
+const routeLineStyle = {
+  id: "gpx-route-line",
+  type: "line",
+  paint: {
+    "line-color": "#ff2d2d",
+    "line-width": 2,
+    "line-opacity": 0.8,
+  },
+  layout: {
+    "line-cap": "round",
+    "line-join": "round",
+  },
+} as const;
+
+export function MapView(props: Props) {
   return (
     <Map
       initialViewState={{
@@ -15,6 +44,11 @@ export function MapView() {
       <NavigationControl position="top-right" />
       <GeolocateControl />
       <ScaleControl />
+      {props.routeGeoJson !== null ? (
+        <Source id="gpx-route-source" type="geojson" data={props.routeGeoJson}>
+          <Layer {...routeLineStyle} />
+        </Source>
+      ) : null}
     </Map>
   );
 }
