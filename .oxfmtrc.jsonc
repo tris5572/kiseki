@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    // 従来版を格納したディレクトリを無視
+    "v0.0/**",
+  ],
+}
