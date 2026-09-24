@@ -1,35 +1,27 @@
-# React + TypeScript + Vite
+# Kiseki（軌跡）
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Kiseki は GPX ファイルのルート（軌跡）を地図上に表示する Web アプリです。
 
-Currently, two official plugins are available:
+https://tris5572.github.io/kiseki/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+絶賛開発中であるため、まだ機能は不足しています。
 
-## React Compiler
+## 使い方
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- ブラウザのウィンドウに GPX ファイルをドラッグ＆ドロップすると、地図上にルート（軌跡）が表示されます。
+  - 複数のファイルを同時に読み込むことも可能です。
+  - 追加で読み込んだファイルは、既存のルートに重ねて表示されます。
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+## 予定している機能
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+- 地図スタイルの追加
+  - [ ] 白ベース
+  - [ ] シンプル
+- 線のスタイル（色・太さ）の変更
+  - [ ] 既存ルートの一括スタイル変更
+  - [ ] ルート追加時のスタイル設定
+- 表示中ルートのリスト表示
+  - [ ] ルートの削除
+  - [ ] 個別ルートのスタイル変更
+  - [ ] ルートの名前変更
+  - [ ] 個別ルートの表示/非表示切替
