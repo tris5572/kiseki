@@ -7,6 +7,7 @@ import {
 } from "react-map-gl/maplibre";
 import Map from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import type { RouteGeoJson } from "./types";
 
 type Props = {
@@ -33,6 +34,7 @@ const routeLineStyle = {
 export function MapView(props: Props) {
   return (
     <Map
+      workerUrl={maplibreWorkerUrl}
       initialViewState={{
         longitude: 137.48,
         latitude: 36,
