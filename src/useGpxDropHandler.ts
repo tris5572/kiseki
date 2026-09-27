@@ -1,12 +1,17 @@
 import { useCallback, useState } from "react";
-import type { GpxLoadingProgress, RouteGeoJson } from "./types";
-import { convertGpxFileToGeoJson, isGpxFile, mergeRouteCollections } from "./util";
+import type { GpxLoadingProgress, RouteGeoJsonLodSet } from "./types";
+import {
+  buildRouteGeoJsonLodSet,
+  convertGpxFileToGeoJson,
+  isGpxFile,
+  mergeRouteLodSets,
+} from "./util";
 
 /**
  * GPXドロップ処理と進捗状態を管理する
  */
 export function useGpxDropHandler() {
-  const [routeGeoJson, setRouteGeoJson] = useState<RouteGeoJson | null>(null);
+  const [routeLodSet, setRouteLodSet] = useState<RouteGeoJsonLodSet | null>(null);
   const [progress, setProgress] = useState<GpxLoadingProgress>({
     isLoading: false,
     currentFileName: "",
@@ -34,11 +39,11 @@ export function useGpxDropHandler() {
     });
 
     try {
-      const collections: Array<RouteGeoJson | null> = [];
+      const collections: Array<RouteGeoJsonLodSet | null> = [];
 
       for (const [index, file] of gpxFiles.entries()) {
         const collection = await convertGpxFileToGeoJson(file);
-        collections.push(collection);
+        collections.push(collection === null ? null : buildRouteGeoJsonLodSet(collection));
 
         // 変換処理中は90%まで進め、最後の描画反映で100%にする
         const percent = Math.max(Math.floor(((index + 1) / gpxFiles.length) * 90), 1);
@@ -51,9 +56,9 @@ export function useGpxDropHandler() {
         });
       }
 
-      const newCollection = mergeRouteCollections(collections);
+      const newCollection = mergeRouteLodSets(collections);
       if (newCollection !== null) {
-        setRouteGeoJson((prev) => mergeRouteCollections([prev, newCollection]));
+        setRouteLodSet((prev) => mergeRouteLodSets([prev, newCollection]));
       }
 
       setProgress((prev) => ({ ...prev, percent: 100 }));
@@ -72,7 +77,7 @@ export function useGpxDropHandler() {
   }, []);
 
   return {
-    routeGeoJson,
+    routeLodSet,
     progress,
     fileDropHandler,
   };
