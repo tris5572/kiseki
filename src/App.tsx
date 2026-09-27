@@ -5,11 +5,11 @@ import { MapView } from "./MapView";
 import { useGpxDropHandler } from "./useGpxDropHandler.ts";
 
 function App() {
-  const { routeGeoJson, progress, fileDropHandler } = useGpxDropHandler();
+  const { routeLodSet, progress, fileDropHandler } = useGpxDropHandler();
 
   return (
     <main>
-      <MapView routeGeoJson={routeGeoJson} />
+      <MapView routeLodSet={routeLodSet} />
       <DropOverlay fileHandler={fileDropHandler} />
       <LoadingProgress progress={progress} />
     </main>
