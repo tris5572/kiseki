@@ -22,6 +22,13 @@ type Props = {
 
 const initialZoom = 7;
 
+/**
+ * 描画用のズームレベルを離散化する
+ */
+function normalizeRouteZoom(zoom: number): number {
+  return Math.max(0, Math.floor(zoom));
+}
+
 const routeLineStyle = {
   id: "gpx-route-line",
   type: "line",
@@ -37,17 +44,18 @@ const routeLineStyle = {
 } as const;
 
 export function MapView(props: Props) {
-  const [zoom, setZoom] = useState(initialZoom);
+  const [routeZoom, setRouteZoom] = useState(() => normalizeRouteZoom(initialZoom));
   const routeGeoJson = useMemo(
-    () => pickRouteGeoJsonForZoom(props.routeLodSet, zoom),
-    [props.routeLodSet, zoom],
+    () => pickRouteGeoJsonForZoom(props.routeLodSet, routeZoom),
+    [props.routeLodSet, routeZoom],
   );
 
   /**
-   * 表示中ズームを更新する
+   * ズーム操作の完了時にだけ描画用ズームレベルを更新する
    */
-  function handleMove(event: ViewStateChangeEvent) {
-    setZoom(event.viewState.zoom);
+  function handleZoomEnd(event: ViewStateChangeEvent) {
+    const nextZoom = normalizeRouteZoom(event.viewState.zoom);
+    setRouteZoom((currentZoom) => (currentZoom === nextZoom ? currentZoom : nextZoom));
   }
 
   return (
@@ -60,7 +68,7 @@ export function MapView(props: Props) {
       }}
       style={{ width: "100dvw", height: "100dvh" }}
       mapStyle="https://tris5572.github.io/map-style/dark/style.json"
-      onMove={handleMove}
+      onZoomEnd={handleZoomEnd}
     >
       <NavigationControl position="top-right" />
       <GeolocateControl />
