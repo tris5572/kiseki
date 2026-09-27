@@ -4,6 +4,8 @@ import type { RouteGeoJson, RouteGeoJsonLevel, RouteGeoJsonLodSet, RoutePosition
 
 /**
  * ズームレベルごとに使用する簡略化設定
+ *
+ * ズームレベルごとに、間引きを行う際の許容誤差(メートル)と、1本あたりの最大座標数を定義する
  */
 const ROUTE_SIMPLIFICATION_LEVELS: ReadonlyArray<{
   minZoom: number;
@@ -164,7 +166,7 @@ export function mergeRouteCollections(
 }
 
 /**
- * GeoJSON内の各ラインをDouglas-Peucker法で簡略化する
+ * GeoJSON内の各ラインを簡略化する
  */
 function simplifyRouteGeoJson(
   routeGeoJson: RouteGeoJson,
