@@ -5,15 +5,19 @@ import type { RouteGeoJson, RouteGeoJsonLevel, RouteGeoJsonLodSet, RoutePosition
 /**
  * ズームレベルごとに使用する簡略化設定
  */
-const ROUTE_SIMPLIFICATION_LEVELS: ReadonlyArray<{ minZoom: number; toleranceMeters: number }> = [
-  { minZoom: 0, toleranceMeters: 2000 },
-  { minZoom: 4, toleranceMeters: 500 },
-  { minZoom: 6, toleranceMeters: 200 },
-  { minZoom: 8, toleranceMeters: 100 },
-  { minZoom: 9, toleranceMeters: 40 },
-  { minZoom: 11, toleranceMeters: 20 },
-  { minZoom: 13, toleranceMeters: 10 },
-  { minZoom: 15, toleranceMeters: 4 },
+const ROUTE_SIMPLIFICATION_LEVELS: ReadonlyArray<{
+  minZoom: number;
+  toleranceMeters: number;
+  maxCoordinatesPerLine: number;
+}> = [
+  { minZoom: 0, toleranceMeters: 2000, maxCoordinatesPerLine: 1200 },
+  { minZoom: 4, toleranceMeters: 500, maxCoordinatesPerLine: 1800 },
+  { minZoom: 6, toleranceMeters: 200, maxCoordinatesPerLine: 2400 },
+  { minZoom: 8, toleranceMeters: 100, maxCoordinatesPerLine: 3200 },
+  { minZoom: 9, toleranceMeters: 40, maxCoordinatesPerLine: 4500 },
+  { minZoom: 11, toleranceMeters: 20, maxCoordinatesPerLine: 6000 },
+  { minZoom: 13, toleranceMeters: 10, maxCoordinatesPerLine: 8000 },
+  { minZoom: 15, toleranceMeters: 4, maxCoordinatesPerLine: 10000 },
 ];
 
 /**
@@ -73,7 +77,7 @@ export function buildRouteGeoJsonLodSet(routeGeoJson: RouteGeoJson): RouteGeoJso
     routeGeoJson:
       level.toleranceMeters <= 0
         ? routeGeoJson
-        : simplifyRouteGeoJson(routeGeoJson, level.toleranceMeters),
+        : simplifyRouteGeoJson(routeGeoJson, level.toleranceMeters, level.maxCoordinatesPerLine),
   }));
 
   return {
@@ -162,7 +166,11 @@ export function mergeRouteCollections(
 /**
  * GeoJSON内の各ラインをDouglas-Peucker法で簡略化する
  */
-function simplifyRouteGeoJson(routeGeoJson: RouteGeoJson, toleranceMeters: number): RouteGeoJson {
+function simplifyRouteGeoJson(
+  routeGeoJson: RouteGeoJson,
+  toleranceMeters: number,
+  maxCoordinatesPerLine: number,
+): RouteGeoJson {
   return {
     type: "FeatureCollection",
     features: routeGeoJson.features.map((feature) => {
@@ -171,7 +179,11 @@ function simplifyRouteGeoJson(routeGeoJson: RouteGeoJson, toleranceMeters: numbe
           ...feature,
           geometry: {
             ...feature.geometry,
-            coordinates: simplifyLineString(feature.geometry.coordinates, toleranceMeters),
+            coordinates: simplifyLineString(
+              feature.geometry.coordinates,
+              toleranceMeters,
+              maxCoordinatesPerLine,
+            ),
           },
         };
       }
@@ -181,7 +193,7 @@ function simplifyRouteGeoJson(routeGeoJson: RouteGeoJson, toleranceMeters: numbe
         geometry: {
           ...feature.geometry,
           coordinates: feature.geometry.coordinates.map((line) =>
-            simplifyLineString(line, toleranceMeters),
+            simplifyLineString(line, toleranceMeters, maxCoordinatesPerLine),
           ),
         },
       };
@@ -195,6 +207,7 @@ function simplifyRouteGeoJson(routeGeoJson: RouteGeoJson, toleranceMeters: numbe
 function simplifyLineString(
   coordinates: ReadonlyArray<RoutePosition>,
   toleranceMeters: number,
+  maxCoordinatesPerLine: number,
 ): RoutePosition[] {
   if (coordinates.length <= 2) {
     return [...coordinates];
@@ -208,9 +221,39 @@ function simplifyLineString(
   simplifyLineSection(points, keepFlags, 0, coordinates.length - 1, toleranceMeters);
 
   const simplified = coordinates.filter((_, index) => keepFlags[index]);
-  return simplified.length >= 2
-    ? simplified
-    : [coordinates[0] as RoutePosition, coordinates[coordinates.length - 1] as RoutePosition];
+  const minimumLine =
+    simplified.length >= 2
+      ? simplified
+      : [coordinates[0] as RoutePosition, coordinates[coordinates.length - 1] as RoutePosition];
+
+  return capLineCoordinateCount(minimumLine, maxCoordinatesPerLine);
+}
+
+/**
+ * 描画負荷を抑えるため、異常に密なラインには頂点数の上限をかける
+ */
+function capLineCoordinateCount(
+  coordinates: ReadonlyArray<RoutePosition>,
+  maxCoordinatesPerLine: number,
+): RoutePosition[] {
+  if (coordinates.length <= maxCoordinatesPerLine) {
+    return [...coordinates];
+  }
+
+  const stride = Math.ceil((coordinates.length - 1) / (maxCoordinatesPerLine - 1));
+  const reduced: RoutePosition[] = [];
+
+  for (let index = 0; index < coordinates.length; index += stride) {
+    reduced.push(coordinates[index] as RoutePosition);
+  }
+
+  const lastCoordinate = coordinates[coordinates.length - 1] as RoutePosition;
+  const currentLastCoordinate = reduced[reduced.length - 1];
+  if (currentLastCoordinate !== lastCoordinate) {
+    reduced.push(lastCoordinate);
+  }
+
+  return reduced;
 }
 
 /**
