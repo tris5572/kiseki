@@ -18,6 +18,10 @@ type Props = {
    * 描画対象のルートLODデータ
    */
   routeLodSet: RouteGeoJsonLodSet | null;
+  /**
+   * 表示する地図スタイルのURL
+   */
+  mapStyleUrl: string;
 };
 
 const initialZoom = 7;
@@ -67,7 +71,7 @@ export function MapView(props: Props) {
         zoom: initialZoom,
       }}
       style={{ width: "100dvw", height: "100dvh" }}
-      mapStyle="https://tris5572.github.io/map-style/dark/style.json"
+      mapStyle={props.mapStyleUrl}
       onZoomEnd={handleZoomEnd}
     >
       <NavigationControl position="top-right" />
