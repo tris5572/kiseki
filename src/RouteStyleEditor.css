@@ -1,0 +1,138 @@
+.route-style-editor {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--map-style-panel-border);
+  border-radius: 12px;
+  background: var(--map-style-panel-bg);
+  backdrop-filter: blur(14px);
+}
+
+.route-style-editor__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.route-style-editor__label {
+  margin: 0;
+  color: hsl(220 18% 18%);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.route-style-editor__style-preview {
+  width: 22px;
+  height: 22px;
+  border: 1px solid hsl(220 16% 70% / 0.9);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.35);
+}
+
+.route-style-editor__apply-mode {
+  display: grid;
+  gap: 8px;
+  line-height: 1;
+}
+
+.route-style-editor__radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: hsl(220 16% 20%);
+  font-size: 12px;
+}
+
+.route-style-editor__radio input {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.route-style-editor__field-group {
+  display: grid;
+  gap: 6px;
+}
+
+.route-style-editor__field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.route-style-editor__field-label {
+  color: hsl(220 16% 20%);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.route-style-editor__field-value {
+  color: hsl(220 14% 34%);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.route-style-editor__color-row,
+.route-style-editor__slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.route-style-editor__text-input,
+.route-style-editor__number-input {
+  appearance: none;
+  border: 1px solid var(--map-style-input-border);
+  border-radius: 8px;
+  background: var(--map-style-input-bg);
+  color: hsl(220 20% 20%);
+  font: inherit;
+}
+
+.route-style-editor__text-input {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.route-style-editor__number-input {
+  width: 72px;
+  padding: 2px 4px;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.route-style-editor__color-picker {
+  width: 32px;
+  height: 32px;
+  padding: 3px;
+  border: 1px solid var(--map-style-input-border);
+  border-radius: 10px;
+  background: var(--map-style-input-bg);
+  cursor: pointer;
+}
+
+.route-style-editor__range-input {
+  width: 100%;
+  min-width: 0;
+}
+
+.route-style-editor__error {
+  color: var(--map-style-error);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.route-style-editor__text-input:focus-visible,
+.route-style-editor__number-input:focus-visible,
+.route-style-editor__color-picker:focus-visible,
+.route-style-editor__range-input:focus-visible {
+  outline: 2px solid hsl(209 90% 45% / 0.38);
+  outline-offset: 2px;
+}

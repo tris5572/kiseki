@@ -1,23 +1,7 @@
-:root {
-  --map-style-panel-bg: hsl(0 0% 100% / 0.6);
-  --map-style-panel-border: hsl(0 0% 100% / 0.2);
-  --map-style-button-text: hsl(220 20% 22%);
-  --map-style-button-bg: hsl(0 0% 100% / 0.52);
-  --map-style-button-border: hsl(220 16% 78% / 0.9);
-  --map-style-button-selected-bg: hsl(209 66% 46%);
-  --map-style-button-selected-border: hsl(209 70% 38%);
-  --map-style-button-selected-text: hsl(0 0% 100%);
-}
-
 .map-style-switcher {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 10;
   display: grid;
   gap: 8px;
-  min-width: 208px;
-  max-width: calc(100vw - 32px);
+  width: 100%;
   padding: 12px;
   border: 1px solid var(--map-style-panel-border);
   border-radius: 12px;
@@ -74,12 +58,5 @@
     border-color: var(--map-style-button-selected-border);
     background: var(--map-style-button-selected-bg);
     color: var(--map-style-button-selected-text);
-  }
-}
-
-@media (max-width: 640px) {
-  .map-style-switcher {
-    min-width: 0;
-    width: min(208px, calc(100vw - 32px));
   }
 }

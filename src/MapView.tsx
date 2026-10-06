@@ -7,19 +7,19 @@ import {
   Source,
   type ViewStateChangeEvent,
 } from "react-map-gl/maplibre";
-import type { StyleSpecification } from "maplibre-gl";
+import type { LineLayerSpecification, StyleSpecification } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Map from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
-import type { RouteGeoJson, RouteGeoJsonLodSet } from "./types";
-import { pickRouteGeoJsonForZoom } from "./util";
+import type { RouteEntry, RouteGeoJson, RouteGeoJsonLodSet, RouteLineFeature } from "./types";
+import { mergeRouteLodSets, pickRouteGeoJsonForZoom } from "./util";
 
 type Props = {
   /**
-   * 描画対象のルートLODデータ
+   * 描画対象のルート一覧
    */
-  routeLodSet: RouteGeoJsonLodSet | null;
+  routes: RouteEntry[];
   /**
    * 表示する地図スタイルのURL
    */
@@ -29,6 +29,9 @@ type Props = {
 const initialZoom = 7;
 const routeSourceId = "gpx-route-source";
 const routeLayerId = "gpx-route-line";
+const routeColorProperty = "kisekiRouteColor";
+const routeWidthProperty = "kisekiRouteWidth";
+const routeOpacityProperty = "kisekiRouteOpacity";
 
 /**
  * 描画用のズームレベルを離散化する
@@ -37,19 +40,86 @@ function normalizeRouteZoom(zoom: number): number {
   return Math.max(0, Math.floor(zoom));
 }
 
-const routeLineStyle = {
-  id: routeLayerId,
-  type: "line",
-  paint: {
-    "line-color": "#ff2d2d",
-    "line-width": 2,
-    "line-opacity": 0.8,
-  },
-  layout: {
-    "line-cap": "round",
-    "line-join": "round",
-  },
-} as const;
+/**
+ * 線色をMapLibre用のRGB文字列へ変換する
+ */
+function formatRouteColor(style: RouteEntry["style"]): string {
+  return `rgb(${style.red}, ${style.green}, ${style.blue})`;
+}
+
+/**
+ * 1本のフィーチャへ描画スタイル属性を埋め込む
+ */
+function decorateRouteFeature(feature: RouteLineFeature, route: RouteEntry): RouteLineFeature {
+  return {
+    ...feature,
+    properties: {
+      ...(feature.properties ?? {}),
+      [routeColorProperty]: formatRouteColor(route.style),
+      [routeWidthProperty]: route.style.width,
+      [routeOpacityProperty]: route.style.opacity,
+    },
+  };
+}
+
+/**
+ * ルートGeoJSONへ描画スタイル属性を埋め込む
+ */
+function decorateRouteGeoJson(routeGeoJson: RouteGeoJson, route: RouteEntry): RouteGeoJson {
+  return {
+    ...routeGeoJson,
+    features: routeGeoJson.features.map((feature) => decorateRouteFeature(feature, route)),
+  };
+}
+
+/**
+ * 1本のルートLODへ描画スタイル属性を埋め込む
+ */
+function decorateRouteLodSet(route: RouteEntry): RouteGeoJsonLodSet {
+  return {
+    original: decorateRouteGeoJson(route.lodSet.original, route),
+    levels: route.lodSet.levels.map((level) => ({
+      ...level,
+      routeGeoJson: decorateRouteGeoJson(level.routeGeoJson, route),
+    })),
+  };
+}
+
+/**
+ * 単一レイヤー用のルート線スタイル定義を生成する
+ */
+function createRouteLineStyle() {
+  const routeColorExpression: ["coalesce", ["get", string], string] = [
+    "coalesce",
+    ["get", routeColorProperty],
+    "#ff2d2d",
+  ];
+  const routeWidthExpression: ["coalesce", ["get", string], number] = [
+    "coalesce",
+    ["get", routeWidthProperty],
+    2,
+  ];
+  const routeOpacityExpression: ["coalesce", ["get", string], number] = [
+    "coalesce",
+    ["get", routeOpacityProperty],
+    0.8,
+  ];
+
+  return {
+    id: routeLayerId,
+    type: "line",
+    source: routeSourceId,
+    paint: {
+      "line-color": routeColorExpression,
+      "line-width": routeWidthExpression,
+      "line-opacity": routeOpacityExpression,
+    },
+    layout: {
+      "line-cap": "round",
+      "line-join": "round",
+    },
+  } satisfies LineLayerSpecification;
+}
 
 /**
  * ルートレイヤーを保持した次のスタイル定義を返す
@@ -75,10 +145,7 @@ function createStyleWithPersistentRoute(
     },
     layers: [
       ...nextStyle.layers.filter((layer) => layer.id !== routeLayerId),
-      {
-        ...routeLineStyle,
-        source: routeSourceId,
-      },
+      createRouteLineStyle(),
     ],
   };
 }
@@ -91,9 +158,13 @@ export function MapView(props: Props) {
   const appliedMapStyleUrlRef = useRef(props.mapStyleUrl);
   const [initialMapStyleUrl] = useState(() => props.mapStyleUrl);
   const [routeZoom, setRouteZoom] = useState(() => normalizeRouteZoom(initialZoom));
+  const mergedRouteLodSet = useMemo<RouteGeoJsonLodSet | null>(
+    () => mergeRouteLodSets(props.routes.map((route) => decorateRouteLodSet(route))),
+    [props.routes],
+  );
   const routeGeoJson = useMemo(
-    () => pickRouteGeoJsonForZoom(props.routeLodSet, routeZoom),
-    [props.routeLodSet, routeZoom],
+    () => pickRouteGeoJsonForZoom(mergedRouteLodSet, routeZoom),
+    [mergedRouteLodSet, routeZoom],
   );
 
   /**
@@ -150,7 +221,7 @@ export function MapView(props: Props) {
       <ScaleControl />
       {routeGeoJson !== null ? (
         <Source id={routeSourceId} type="geojson" data={routeGeoJson}>
-          <Layer {...routeLineStyle} />
+          <Layer {...createRouteLineStyle()} />
         </Source>
       ) : null}
     </Map>
