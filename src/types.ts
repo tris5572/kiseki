@@ -56,6 +56,55 @@ export type RouteGeoJsonLodSet = {
 };
 
 /**
+ * ルート線の描画スタイル
+ */
+export type RouteStyle = {
+  /**
+   * 線の赤成分
+   */
+  red: number;
+  /**
+   * 線の緑成分
+   */
+  green: number;
+  /**
+   * 線の青成分
+   */
+  blue: number;
+  /**
+   * 線の不透明度
+   */
+  opacity: number;
+  /**
+   * 線の太さ
+   */
+  width: number;
+};
+
+/**
+ * 1本のルートとその描画スタイル
+ */
+export type RouteEntry = {
+  /**
+   * ルートごとの識別子
+   */
+  id: string;
+  /**
+   * ルートのLODデータ
+   */
+  lodSet: RouteGeoJsonLodSet;
+  /**
+   * このルートに適用する描画スタイル
+   */
+  style: RouteStyle;
+};
+
+/**
+ * スタイル変更の適用対象
+ */
+export type RouteStyleApplyMode = "all" | "future";
+
+/**
  * GPX読み込み処理の進捗状態
  */
 export type GpxLoadingProgress = {
